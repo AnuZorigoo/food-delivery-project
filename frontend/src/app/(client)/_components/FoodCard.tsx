@@ -1,8 +1,12 @@
 "use client";
 
+import React from "react";
+import Link from "next/link";
+
 export const FoodCard = ({ food }: { food: any }) => {
   return (
-    <div className="w-100 h-85.5 rounded-4xl bg-white flex flex-col gap-5 p-4">
+    
+    <div className=" h-85.5 rounded-4xl bg-white flex flex-col gap-5 p-4">
       <img
         className="w-92.5 h-{210px] rounded "
         src={food.image}
@@ -17,6 +21,11 @@ export const FoodCard = ({ food }: { food: any }) => {
         </div>
         <p className="text-[14px]">{food.description}</p>
       </div>
+      <iframe>
+        <div className="flex bg-white rounded-[20px] gap-6 ">
+            <img src={"/Product Image.png"}></img>
+        </div>
+    </iframe>
     </div>
   );
 };

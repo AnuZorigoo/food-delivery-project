@@ -36,19 +36,14 @@ export const FoodSection = () => {
       price: "$7.99",
       description: "Crispy rolls stuffed with veggies and served with dip.",
     },
-    {
-      id: 5,
-      image: "/Product Image (1).png",
-      title: "Mozzarella Sticks",
-      price: "$6.99",
-      description: "Fried cheese sticks served with marinara sauce.",
-    },
+    
   ];
 
   return (
-    <div className="w-full px-4">
+    <div className="flex flex-col pb-10">
+    <div className="w-full pt-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">Appetizers</h2>
+        <h2 className="text-2xl font-semibold text-white">Appetizers</h2>
         <Link href="/foods">
           <Button variant="secondary" className="flex items-center gap-2">
             See more <ArrowRight className="h-4 w-4" />
@@ -56,11 +51,44 @@ export const FoodSection = () => {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {foods.map((food) => (
           <FoodCard key={food.id} food={food} />
         ))}
       </div>
+    </div>
+    <div className="w-full pt-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold text-white">Salads</h2>
+        <Link href="/foods">
+          <Button variant="secondary" className="flex items-center gap-2">
+            See more <ArrowRight className="h-4 w-4" />
+          </Button>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {foods.map((food) => (
+          <FoodCard key={food.id} food={food} />
+        ))}
+      </div>
+    </div>
+    <div className="w-full pt-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold text-white">Lunch favorites</h2>
+        <Link href="/foods">
+          <Button variant="secondary" className="flex items-center gap-2">
+            See more <ArrowRight className="h-4 w-4" />
+          </Button>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {foods.map((food) => (
+          <FoodCard key={food.id} food={food} />
+        ))}
+      </div>
+    </div>
     </div>
   );
 };
