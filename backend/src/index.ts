@@ -1,5 +1,6 @@
 import express from 'express'
-import { connectToDatabase } from './database/shema/index.js'
+import { connectToDatabase } from './database/schema/index.js'
+
 
 await  connectToDatabase()
 
