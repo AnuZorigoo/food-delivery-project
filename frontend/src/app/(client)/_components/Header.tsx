@@ -13,8 +13,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MapPin, ShoppingCart, User } from "lucide-react";
+import { Car, MapPin, ShoppingCart, User } from "lucide-react";
 import Link from "next/link";
+import { CartSheet } from "./CartSheet";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { email } from "zod/v4/mini";
 
 export const Header = () => {
   return (
@@ -69,15 +76,29 @@ export const Header = () => {
             </DialogContent>
           </form>
         </Dialog>
-        <Button className="rounded-full" variant="outline">
-          <ShoppingCart />
-        </Button>
-        <Button
-          variant="secondary"
-          className="rounded-full bg-[#EF4444] text-white"
-        >
-          <User />
-        </Button>
+        <CartSheet>
+          <Button className="rounded-full" variant="outline">
+            <ShoppingCart />
+          </Button>
+        </CartSheet>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="secondary"
+              className="rounded-full bg-[#EF4444] text-white"
+            >
+              <User />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-fit">
+            <div className="flex flex-col items-center gap-2 ">
+              <p>email</p>
+              <Button className="rounded-xl" variant={"secondary"}>
+                Sign out
+              </Button>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
     </div>
   );

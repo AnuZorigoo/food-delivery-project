@@ -1,4 +1,7 @@
 import express from 'express'
+import { connectToDatabase } from './database/shema/index.js'
+
+await  connectToDatabase()
 
 const app = express()
 

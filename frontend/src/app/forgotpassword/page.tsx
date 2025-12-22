@@ -16,8 +16,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-/* ---------------- SCHEMAS ---------------- */
-
 const emailSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
 });
@@ -37,8 +35,6 @@ const passwordSchema = z
     path: ["confirmPassword"],
     message: "Passwords do not match",
   });
-
-/* ---------------- PAGE ---------------- */
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -60,13 +56,9 @@ export default function ForgotPasswordPage() {
     },
   });
 
-  /* ---------------- HANDLERS ---------------- */
-
   const onEmailSubmit = (values: z.infer<typeof emailSchema>) => {
     setEmail(values.email);
     setStep("verify");
-
-    // 👉 энд reset email API дуудна
   };
 
   const onPasswordSubmit = (values: z.infer<typeof passwordSchema>) => {
@@ -75,15 +67,11 @@ export default function ForgotPasswordPage() {
       password: values.password,
     });
 
-    // 👉 амжилттай бол login руу
     router.push("/login");
   };
 
-  /* ---------------- UI ---------------- */
-
   return (
     <div className="min-h-screen flex w-full justify-center items-center gap-10 px-6">
-      {/* ---------------- EMAIL STEP ---------------- */}
       {step === "email" && (
         <Form {...emailForm}>
           <form
@@ -138,9 +126,8 @@ export default function ForgotPasswordPage() {
         </Form>
       )}
 
-      {/* ---------------- VERIFY STEP ---------------- */}
       {step === "verify" && (
-        <div className="space-y-4 w-[400px] flex flex-col">
+        <div className="space-y-4 w-100 flex flex-col">
           <Button
             type="button"
             variant="outline"
@@ -172,7 +159,6 @@ export default function ForgotPasswordPage() {
         </div>
       )}
 
-      {/* ---------------- PASSWORD STEP ---------------- */}
       {step === "password" && (
         <Form {...passwordForm}>
           <form
