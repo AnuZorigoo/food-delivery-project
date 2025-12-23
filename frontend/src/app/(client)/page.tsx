@@ -7,7 +7,6 @@ export default function Home() {
     <div className="flex min-h-screen items-center justify-center bg-[#404040] font-sans dark:bg-black flex-col gap-[54px]">
       <img src={"/BG.png"}></img>
       <FoodSection />
-      
     </div>
   );
 }

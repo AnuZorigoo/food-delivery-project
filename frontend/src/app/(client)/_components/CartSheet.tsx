@@ -1,24 +1,39 @@
+"use client";
 import {
   Sheet,
   SheetTrigger,
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
   SheetFooter,
-  SheetClose,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ShoppingCart } from "lucide-react";
 
-export const CartSheet = ({ children }: { children: React.ReactNode }) => {
+type CartItem = {
+  id?: string | number;
+  title: string;
+  price: string | number;
+};
+
+type CartSheetProps = {
+  children: React.ReactNode;
+  open: boolean;
+  setOpen: (v: boolean) => void;
+  cart?: CartItem[];
+};
+
+export const CartSheet = ({
+  children,
+  open,
+  setOpen,
+  cart = [],
+}: CartSheetProps) => {
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
 
-      <SheetContent className="bg-[#404040]  text-white p-4 gap-1,5">
+      <SheetContent className="bg-[#404040] text-white p-4 flex flex-col gap-4">
         <SheetHeader className="flex flex-col gap-5">
           <SheetTitle className="flex text-white gap-2 ">
             {" "}
@@ -32,32 +47,38 @@ export const CartSheet = ({ children }: { children: React.ReactNode }) => {
           </div>
         </SheetHeader>
 
-        <div className="flex flex-col gap-4 px-4 rounded-4xl bg-white h-135 text-black p-4">
-          <p className="text-[20px] font-semibold">My Cart</p>
-          <div className="flex flex-col items-center gap-1 bg-[#F4F4F5] rounded-4xl p-4">
-            <img
-              src={"/Screenshot 2024-12-17 at 18.02.18 1 (Traced).png"}
-            ></img>
-            <p className="text-[16px] font-bold">Your cart is empthy </p>
-            <p className="text-[12px] text-[#71717A]">
-              Hungry? 🍔 Add some delicious dishes to your cart and satisfy your
-              cravings!
-            </p>
-          </div>
-        </div>
-        <SheetFooter>
-          <div className="h-69 bg-[#FFFFFF]rounded-2xl flex flex-col gap-4 p-4">
-            <p className="text-[20px] font-semibold">Payment info</p>
-            <div className="flex flex-col gap-2">
-              <p className="text-[#71717A] text-[16px]">Items</p>
-              <p className="text-[#71717A] text-[16px]">Shipping</p>
+        <div className="flex-1 bg-white text-black rounded-4xl p-4 overflow-auto">
+          <p className="text-[20px] font-semibold mb-3">My Cart</p>
+
+          {cart.length === 0 ? (
+            <div className="flex flex-col items-center gap-2 text-center text-gray-500">
+              <p className="font-semibold">Your cart is empty</p>
+              <p className="text-sm">
+                Hungry? 🍔 Add some delicious dishes to your cart!
+              </p>
             </div>
-            <p className="text-[#71717A] text-[16px]">Total</p>
-            <Button className=" rounded-full bg-[#EF4444]">Checkout</Button>
-          </div>
-          {/* <SheetClose asChild>
-            <Button variant="outline">Close</Button>
-          </SheetClose> */}
+          ) : (
+            <div className="flex flex-col gap-3">
+              {cart.map((item, index) => (
+                <div
+                  key={item.id ?? index}
+                  className="flex justify-between items-center border-b pb-2"
+                >
+                  <p className="font-medium">{item.title}</p>
+                  <p className="font-semibold text-[#EF4444]">{item.price}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <SheetFooter className="bg-white rounded-2xl p-4">
+          <Button
+            className="w-full rounded-full bg-[#EF4444]"
+            disabled={cart.length === 0}
+          >
+            Checkout
+          </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>

@@ -22,8 +22,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { email } from "zod/v4/mini";
+import { useState } from "react";
 
 export const Header = () => {
+  const [open, setOpen] = useState(false);
+  const [cart, setCart] = useState<any[]>([]);
   return (
     <div className="bg-black flex pr-44 pl-44 pt-3 pb-3 justify-between">
       <Link href="/">
@@ -50,13 +53,11 @@ export const Header = () => {
               </DialogHeader>
 
               <div className="grid gap-4">
-                {/* Example: City */}
                 <div className="grid gap-3">
                   <Label htmlFor="city">City</Label>
                   <Input id="city" name="city" placeholder="Enter your city" />
                 </div>
 
-                {/* Example: Street / Address */}
                 <div className="grid gap-3">
                   <Label htmlFor="street">Street / Address</Label>
                   <Input
@@ -76,7 +77,7 @@ export const Header = () => {
             </DialogContent>
           </form>
         </Dialog>
-        <CartSheet>
+        <CartSheet open={open} setOpen={setOpen} cart={cart}>
           <Button className="rounded-full" variant="outline">
             <ShoppingCart />
           </Button>
