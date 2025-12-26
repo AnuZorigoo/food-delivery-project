@@ -6,16 +6,7 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-export const FoodSection = () => {
-  const [cart, setCart] = useState<any[]>([]);
-  const [open, setOpen] = useState(false);
-
-  const addToCart = (food: any) => {
-    setCart((prev) => [...prev, food]);
-    setOpen(true);
-    console.log("CART:", cart);
-  };
-
+export const FoodSection = ({ addToCart }: any) => {
   const foods = [
     {
       id: 1,

@@ -78,7 +78,11 @@ export const Header = () => {
           </form>
         </Dialog>
         <CartSheet open={open} setOpen={setOpen} cart={cart}>
-          <Button className="rounded-full" variant="outline">
+          <Button
+            onClick={() => setOpen(true)}
+            variant="outline"
+            className="rounded-full"
+          >
             <ShoppingCart />
           </Button>
         </CartSheet>

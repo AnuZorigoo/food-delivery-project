@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
+import { useState } from "react";
 
 type CartItem = {
   id?: string | number;
@@ -23,12 +24,16 @@ type CartSheetProps = {
   cart?: CartItem[];
 };
 
-export const CartSheet = ({
-  children,
-  open,
-  setOpen,
-  cart = [],
-}: CartSheetProps) => {
+export const CartSheet = ({ children, open, setOpen, cart }: any) => {
+  const [quantity, setQuantity] = useState(1);
+
+  const increment = () => {
+    setQuantity((prev) => prev + 1);
+  };
+  const decrement = () => {
+    setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
@@ -48,7 +53,9 @@ export const CartSheet = ({
         </SheetHeader>
 
         <div className="flex-1 bg-white text-black rounded-4xl p-4 overflow-auto">
-          <p className="text-[20px] font-semibold mb-3">My Cart</p>
+          <p className="text-[20px] font-semibold mb-3 text-[#71717A]">
+            My Cart
+          </p>
 
           {cart.length === 0 ? (
             <div className="flex flex-col items-center gap-2 text-center text-gray-500">
@@ -59,13 +66,55 @@ export const CartSheet = ({
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-              {cart.map((item, index) => (
+              {cart.map((item: any, i: number) => (
                 <div
-                  key={item.id ?? index}
-                  className="flex justify-between items-center border-b pb-2"
+                  key={i}
+                  className="flex justify-between items-center border-b pb-2 gap-2"
                 >
-                  <p className="font-medium">{item.title}</p>
-                  <p className="font-semibold text-[#EF4444]">{item.price}</p>
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-16 h-16 rounded-lg object-cover"
+                  />
+                  <div>
+                    <div className="flex">
+                      <div>
+                        <p className="font-bold text-[#EF4444]">{item.title}</p>
+                        <p className="text-[12px]">{item.description}</p>
+                      </div>
+                      <Button
+                        className="rounded-full border border-[#EF4444] text-[#EF4444] h-6 w-6 p-0 flex items-center justify-center bg-transparent"
+                        variant={"secondary"}
+                      >
+                        x
+                      </Button>
+                    </div>
+                    <div className="flex flex-col items-between h-full justify-between"></div>
+                    <div className="flex justify-between items-center">
+                      <div className="flex gap-1 items-center">
+                        <Button
+                          onClick={decrement}
+                          variant={"secondary"}
+                          className="rounded-full  bg-transparent"
+                        >
+                          -
+                        </Button>
+                        <p>{quantity}</p>
+                        <Button
+                          onClick={increment}
+                          variant={"secondary"}
+                          className="rounded-full  bg-transparent"
+                        >
+                          +
+                        </Button>
+                      </div>
+                      <p className="font-semibold text-[#EF4444]">
+                        $
+                        {Number(String(item.price).replace(/[^0-9]/g, "")) *
+                          quantity}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
