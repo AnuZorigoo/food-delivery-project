@@ -11,7 +11,7 @@ export default function AdminLayout({
     <>
       <SidebarProvider>
         <AppSidebar />
-        <main>{children}</main>
+        <main className="flex-1">{children}</main>
       </SidebarProvider>{" "}
     </>
   );

@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ComboboxDemo } from "../_components/Combobox";
 
 const orders = [
   {
@@ -36,6 +37,7 @@ const orders = [
 export default function Page() {
   const [checkAll, setCheckAll] = useState(false);
   const [checkedOrders, setCheckedOrders] = useState<number[]>([]);
+  const [status, setStatus] = useState("");
 
   const toggleCheckAll = () => {
     if (checkAll) {
@@ -55,10 +57,11 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen h-full bg-secondary flex flex-col items-center p-8 justify-center">
-      <Button variant={"ghost"} className="rounded-full">
+    <div className="min-h-screen h-full bg-secondary flex flex-col  p-8">
+      <div className="w-full  flex content-end justify-end ">
+      <Button variant={"ghost"} className="rounded-full flex-end">
         <img src="/Container (7).png" alt="Logo" className=" mb-4" />
-      </Button>
+      </Button></div>
       <div className="w-full border rounded-lg bg-white">
         <div className="flex justify-between items-center p-4 border-b">
           <div>
@@ -113,15 +116,8 @@ export default function Page() {
                 <TableCell className="font-semibold">{order.total}</TableCell>
                 <TableCell>{order.address}</TableCell>
                 <TableCell>
-                  <span
-                    className={`px-2 py-1 rounded text-sm ${
-                      order.status === "Delivered"
-                        ? "bg-green-100 text-green-600"
-                        : "bg-yellow-100 text-yellow-600"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
+                  <ComboboxDemo/>
+                  
                 </TableCell>
               </TableRow>
             ))}
