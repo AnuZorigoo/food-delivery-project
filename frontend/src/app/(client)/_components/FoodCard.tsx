@@ -45,7 +45,7 @@ export const FoodCard = ({
 
   return (
     <Dialog>
-      <div className="h-85.5 rounded-4xl bg-white flex flex-col gap-5 p-4">
+      <div className="h-85.5 rounded-4xl bg-white flex flex-col gap-5 p-4 border border-gray-200">
         <div className="relative">
           <img
             className="w-full h-52.5 rounded-xl object-cover"

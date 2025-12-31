@@ -12,6 +12,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ComboboxDemo } from "../_components/Combobox";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const orders = [
   {
@@ -38,6 +48,18 @@ export default function Page() {
   const [checkAll, setCheckAll] = useState(false);
   const [checkedOrders, setCheckedOrders] = useState<number[]>([]);
   const [status, setStatus] = useState("");
+  const [orderList, setOrderList] = useState(orders);
+  const [selectedStatus, setSelectedStatus] = useState("");
+
+  const handleSave = () => {
+    setOrderList((prev) =>
+      prev.map((order) =>
+        checkedOrders.includes(order.id)
+          ? { ...order, status: selectedStatus }
+          : order
+      )
+    );
+  };
 
   const toggleCheckAll = () => {
     if (checkAll) {
@@ -59,19 +81,71 @@ export default function Page() {
   return (
     <div className="min-h-screen h-full bg-secondary flex flex-col  p-8">
       <div className="w-full  flex content-end justify-end ">
-      <Button variant={"ghost"} className="rounded-full flex-end">
-        <img src="/Container (7).png" alt="Logo" className=" mb-4" />
-      </Button></div>
+        <Button variant={"ghost"} className="rounded-full flex-end">
+          <img src="/Container (7).png" alt="Logo" className=" mb-4" />
+        </Button>
+      </div>
       <div className="w-full border rounded-lg bg-white">
         <div className="flex justify-between items-center p-4 border-b">
           <div>
             <p className="text-[20px] font-bold">Orders</p>
             <p className="text-[12px] text-[#71717A]">Items</p>
           </div>
+          <Dialog>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSave();
+              }}
+            >
+              <DialogTrigger asChild>
+                <Button variant="secondary" className="rounded-md">
+                  Change delivery state
+                </Button>
+              </DialogTrigger>
 
-          <Button variant="secondary" className="rounded-md">
-            Change delivery state
-          </Button>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Change delivery state</DialogTitle>
+                </DialogHeader>
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="secondary"
+                    className="flex-1 rounded-full"
+                    type="button"
+                    onClick={() => setSelectedStatus("Delivered")}
+                  >
+                    Delivered
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    className="flex-1 rounded-full"
+                    type="button"
+                    onClick={() => setSelectedStatus("Pending")}
+                  >
+                    Pending
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    className="flex-1 rounded-full"
+                    type="button"
+                    onClick={() => setSelectedStatus("Cancelled")}
+                  >
+                    Cancelled
+                  </Button>
+                </div>
+
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="submit" className="w-full rounded-full">
+                      Save
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </form>
+          </Dialog>
         </div>
 
         <Table>
@@ -100,7 +174,7 @@ export default function Page() {
           </TableHeader>
 
           <TableBody>
-            {orders.map((order, index) => (
+            {orderList.map((order, index) => (
               <TableRow key={order.id} className="hover:bg-gray-50">
                 <TableCell>
                   <input
@@ -116,8 +190,7 @@ export default function Page() {
                 <TableCell className="font-semibold">{order.total}</TableCell>
                 <TableCell>{order.address}</TableCell>
                 <TableCell>
-                  <ComboboxDemo/>
-                  
+                  <ComboboxDemo />
                 </TableCell>
               </TableRow>
             ))}

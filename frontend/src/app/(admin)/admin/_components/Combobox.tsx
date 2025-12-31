@@ -1,43 +1,40 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
+import * as React from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
 const frameworks = [
-  {
-    value: "pending",
-    label: "Pending",
-  },
-  {
-    value: "delivered",
-    label: "Delivered",
-  },
-  {
-    value: "cancelled",
-    label: "Cancelled",
-  },
-  
-]
+  { value: "pending", label: "Pending" },
+  { value: "delivered", label: "Delivered" },
+  { value: "cancelled", label: "Cancelled" },
+];
 
 export function ComboboxDemo() {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("pending");
+
+  const borderColor =
+    value === "pending"
+      ? "border-red-400"
+      : value === "delivered"
+      ? "border-green-400"
+      : value === "cancelled"
+      ? "border-gray-200"
+      : "";
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -46,20 +43,15 @@ export function ComboboxDemo() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between "
+          className={cn("w-50 justify-between border", borderColor)}
         >
-          {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Pending"}
-            
-            
-
+          {frameworks.find((framework) => framework.value === value)?.label}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+
+      <PopoverContent className="w-50 p-0">
         <Command>
-          
           <CommandList>
             <CommandGroup>
               {frameworks.map((framework) => (
@@ -67,8 +59,8 @@ export function ComboboxDemo() {
                   key={framework.value}
                   value={framework.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
+                    setValue(currentValue);
+                    setOpen(false);
                   }}
                 >
                   {framework.label}
@@ -85,5 +77,5 @@ export function ComboboxDemo() {
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

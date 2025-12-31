@@ -36,13 +36,15 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="none" className="h-full bg-white border-r">
       <SidebarHeader>
-        <div className="flex gap-4 justify-center items-center py-5">
-          <img src="/Logo.png" className="w-10 h-10" />
-          <div>
-            <p className="text-[18px] font-semibold">NomNom</p>
-            <p className="text-[12px] text-[#71717A]">Swift delivery</p>
+        <Link href="/">
+          <div className="flex gap-4 justify-center items-center py-5">
+            <img src="/Logo.png" className="w-10 h-10" />
+            <div>
+              <p className="text-[18px] font-semibold">NomNom</p>
+              <p className="text-[12px] text-[#71717A]">Swift delivery</p>
+            </div>
           </div>
-        </div>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent>
