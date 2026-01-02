@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FileInput } from "lucide-react";
 import { map } from "zod/v4/mini";
+import { FoodEditCard } from "./_components/FoodEditCard";
 
 export default function Home() {
   const foods = [
@@ -128,7 +129,7 @@ export default function Home() {
           </div>
 
           {foods.map((food) => (
-            <FoodCard key={food.id} food={food} onAddToCart={onAddToCart} />
+            <FoodEditCard key={food.id} food={food} onAddToCart={onAddToCart} />
           ))}
         </div>
       </div>
