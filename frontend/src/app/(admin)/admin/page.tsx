@@ -1,153 +1,122 @@
 "use client";
-import { FoodCard } from "@/app/(client)/_components/FoodCard";
+
+import { useEffect, useState } from "react";
+import { FoodEditCard } from "./_components/FoodEditCard";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileInput } from "lucide-react";
-import { map } from "zod/v4/mini";
-import { FoodEditCard } from "./_components/FoodEditCard";
+
+type Food = {
+  _id: string;
+  name: string;
+  price: number;
+  ingredients: string;
+  imageUrl: string;
+  categoryId: [
+    {
+      _id: string;
+      name: string;
+    }
+  ];
+};
 
 export default function Home() {
-  const foods = [
-    {
-      id: 1,
-      image: "/4ff51a14c041fc57196ebf52f07e524b5e4cc98c.png",
-      title: "Finger food",
-      price: "$12.99",
-      description: "Fluffy pancakes stacked with fruits",
-    },
-    {
-      id: 2,
-      image: "/4ff51a14c041fc57196ebf52f07e524b5e4cc98c.png",
-      title: "Salad",
-      price: "$9.99",
-      description: "Fresh garden salad with vinaigrette dressing.",
-    },
-    {
-      id: 3,
-      image: "/4ff51a14c041fc57196ebf52f07e524b5e4cc98c.png",
-      title: "Bruschetta",
-      price: "$8.99",
-      description: "Toasted bread with tomatoes, basil, and olive oil.",
-    },
-    {
-      id: 4,
-      image: "/4ff51a14c041fc57196ebf52f07e524b5e4cc98c.png",
-      title: "Spring Rolls",
-      price: "$7.99",
-      description: "Crispy rolls stuffed with veggies and served with dip.",
-    },
-  ];
+  const [foods, setFoods] = useState<Food[]>([]);
 
-  const onAddToCart = (food: any) => () => {
-    console.log("Added to cart:");
+  useEffect(() => {
+    const getData = async () => {
+      const res = await fetch("http://localhost:4000/foods");
+      const data: Food[] = await res.json();
+      setFoods(data);
+    };
+    getData();
+  }, []);
+
+  const onAddToCart = (food: Food) => {
+    console.log("Added to cart:", food);
   };
 
   return (
-    <div className="min-h-screen h-full bg-secondary flex flex-col  p-8">
-      <div className="w-full  flex content-end justify-end ">
-        <Button variant={"ghost"} className="rounded-full flex-end">
-          <img src="/Container (7).png" alt="Logo" className=" mb-4" />
+    <div className="min-h-screen bg-secondary p-8">
+      <div className="flex justify-end mb-4">
+        <Button variant="ghost" className="rounded-full">
+          <img src="/Container (7).png" alt="Logo" />
         </Button>
       </div>
-      <div className=" border rounded-lg bg-white p-5">
-        <p className="text-[20px] font-semibold pl-5">Appetizers</p>
-        <div className="grid grid-cols-4 grid-rows-2 p-5 gap-5">
-          <div className="flex flex-col gap-5 items-center justify-center border border-dashed border-red-400 rounded-lg">
-            <Dialog>
-              <form>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="rounded-full w-10 h-10 bg-red-400 flex justify-center items-center text-white"
-                  >
-                    +
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px] flex flex-col gap-4">
-                  <DialogHeader>
-                    <DialogTitle>Add new Dish to Appetizers</DialogTitle>
-                  </DialogHeader>
-                  <div className="grid gap-4">
-                    <div className="flex gap-2">
-                      <div className="grid gap-3">
-                        <Label htmlFor="name-1">Food name</Label>
-                        <Input
-                          id="name-1"
-                          name="name"
-                          placeholder="Type food name"
-                        />
-                      </div>
-                      <div className="grid gap-3">
-                        <Label htmlFor="name-1">Food price</Label>
-                        <Input
-                          id="name-1"
-                          name="name"
-                          placeholder="Enter price..."
-                        />
-                      </div>
-                    </div>
-                    <div className="grid gap-3">
-                      <Label htmlFor="username-1">Ingredients</Label>
-                      <Input
-                        id="username-1"
-                        name="username"
-                        placeholder="List ingredients..."
-                      />
-                    </div>
-                    <Label htmlFor="username-1">Food image</Label>
-                    <FileInput />
+
+      <div className="border rounded-lg bg-white p-5">
+        <p className="text-lg font-semibold mb-5">Appetizers</p>
+
+        <div className="grid grid-cols-4 gap-5">
+          <Dialog>
+            <DialogTrigger asChild>
+              <div className="flex flex-col gap-3 items-center justify-center border border-dashed border-red-400 rounded-lg cursor-pointer h-full">
+                <Button className="rounded-full w-10 h-10 bg-red-400 text-white">
+                  +
+                </Button>
+                <p>Add new Dish</p>
+              </div>
+            </DialogTrigger>
+
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add new Dish</DialogTitle>
+              </DialogHeader>
+
+              <form className="space-y-4">
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <Label>Food name</Label>
+                    <Input placeholder="Type food name" />
                   </div>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">Cancel</Button>
-                    </DialogClose>
-                    <Button type="submit">Save changes</Button>
-                  </DialogFooter>
-                </DialogContent>
+                  <div className="flex-1">
+                    <Label>Price</Label>
+                    <Input type="number" placeholder="Enter price" />
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Ingredients</Label>
+                  <Input placeholder="List ingredients" />
+                </div>
+
+                <div>
+                  <Label>Food image</Label>
+                  <Input type="file" />
+                </div>
+
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button type="submit">Save</Button>
+                </DialogFooter>
               </form>
-            </Dialog>
-            <p>Add new Dish to Salads </p>
-          </div>
+            </DialogContent>
+          </Dialog>
 
           {foods.map((food) => (
-            <FoodEditCard key={food.id} food={food} onAddToCart={onAddToCart} />
+            <FoodEditCard
+              key={food._id}
+              food={food}
+              name={food.name}
+              price={food.price}
+              ingredients={food.ingredients}
+              imageUrl={food.imageUrl}
+              onAddToCart={onAddToCart}
+            />
           ))}
         </div>
       </div>
     </div>
   );
 }
-
-<Empty className="border border-dashed flex flex-col justify-center items-center gap-5">
-  <EmptyHeader>
-    <Button
-      variant="outline"
-      size="sm"
-      className="rounded-full bg-red-400 text-white h-10 w-10 flex items-center justify-center"
-    >
-      +
-    </Button>
-  </EmptyHeader>
-  <EmptyContent>
-    <EmptyTitle>Add new Dish to Appetizers</EmptyTitle>
-  </EmptyContent>
-</Empty>;

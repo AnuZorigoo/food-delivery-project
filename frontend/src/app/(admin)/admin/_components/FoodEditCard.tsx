@@ -51,8 +51,8 @@ export const FoodEditCard = ({
         <div className="relative">
           <img
             className="w-full h-52.5 rounded-xl object-cover"
-            src={food.image}
-            alt={food.title}
+            src={food.imageUrl}
+            alt={food.name}
           />
           <DialogTrigger asChild>
             <Button
@@ -74,12 +74,12 @@ export const FoodEditCard = ({
         <div className="flex flex-col gap-2 cursor-pointer">
           <div className="flex justify-between items-center">
             <p className="text-[24px] text-[#EF4444] font-semibold">
-              {food.title}
+              {food.name}
             </p>
             <p className="font-semibold text-[18px]">{food.price}</p>
           </div>
 
-          <p className="text-[14px] text-gray-600">{food.description}</p>
+          <p className="text-[14px] text-gray-600">{food.ingredients}</p>
         </div>
 
         <DialogContent className="max-w-200 w-full p-0 rounded-2xl">
@@ -93,7 +93,7 @@ export const FoodEditCard = ({
                 <Input
                   id="dish-name"
                   name="dish-name"
-                  defaultValue={food.title}
+                  defaultValue={food.name}
                   className="flex-3"
                 />
               </div>
@@ -110,7 +110,7 @@ export const FoodEditCard = ({
                 <Input
                   id="dish-name"
                   name="dish-name"
-                  defaultValue={food.description}
+                  defaultValue={food.ingredients}
                   className="flex-3"
                 />
               </div>
@@ -126,8 +126,8 @@ export const FoodEditCard = ({
               <div className="flex gap-2">
                 <p className="text-[12px] text-[#71717A] flex-1">Image</p>
                 <img
-                  src={food.image}
-                  alt={food.title}
+                  src={food.imageUrl}
+                  alt={food.name}
                   className="w-75 h-65 object-cover rounded-xl flex-3"
                 />
               </div>
