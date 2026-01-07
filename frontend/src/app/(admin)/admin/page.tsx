@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { api } from "@/lib/axios";
 
 type Food = {
   _id: string;
@@ -34,8 +35,7 @@ export default function Home() {
 
   useEffect(() => {
     const getData = async () => {
-      const res = await fetch("http://localhost:4000/foods");
-      const data: Food[] = await res.json();
+      const { data } = await api.get<Food[]>("/foods");
       setFoods(data);
     };
     getData();
