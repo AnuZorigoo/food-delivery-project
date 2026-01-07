@@ -83,6 +83,9 @@ export const FoodEditCard = ({
         </div>
 
         <DialogContent className="max-w-200 w-full p-0 rounded-2xl">
+          <DialogHeader>
+            <DialogTitle></DialogTitle>
+          </DialogHeader>
           <div className="flex flex-col gap-6 p-6 bg-white rounded-2xl">
             <div className="flex flex-col justify-between w-full gap-5">
               <div>
