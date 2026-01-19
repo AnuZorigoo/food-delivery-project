@@ -64,10 +64,6 @@ export default function Home() {
             <FoodEditCard
               key={food._id}
               food={food}
-              name={food.name}
-              price={food.price}
-              ingredients={food.ingredients}
-              imageUrl={food.imageUrl}
               onAddToCart={onAddToCart}
             />
           ))}
