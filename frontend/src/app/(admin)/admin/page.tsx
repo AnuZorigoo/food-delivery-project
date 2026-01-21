@@ -27,11 +27,25 @@ type Food = {
     {
       _id: string;
       name: string;
-    }
+    },
   ];
+};
+type Categories = {
+  _id: string;
+  name: string;
 };
 
 export default function Home() {
+  const [categories, setCategories] = useState<Categories[]>([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await api.get<Categories[]>("/categories");
+      setCategories(data);
+    };
+    getData();
+  }, []);
+
   const [foods, setFoods] = useState<Food[]>([]);
 
   useEffect(() => {
@@ -52,6 +66,18 @@ export default function Home() {
         <Button variant="ghost" className="rounded-full">
           <img src="/Container (7).png" alt="Logo" />
         </Button>
+      </div>
+      <div className="w-full h-fit">
+        <div className="flex gap-2">
+          {categories.map((category) => (
+            <span
+              key={category._id}
+              className="border border-secondary rounded-xl"
+            >
+              {category.name}
+            </span>
+          ))}
+        </div>
       </div>
 
       <div className="border rounded-lg bg-white p-5">
