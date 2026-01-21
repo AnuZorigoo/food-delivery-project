@@ -67,12 +67,13 @@ export default function Home() {
           <img src="/Container (7).png" alt="Logo" />
         </Button>
       </div>
-      <div className="w-full h-fit">
+      <div className="w-full h-fit bg-white rounded-2xl p-5 mb-8 gap-4 flex flex-col">
+        <p className="text-[20px] font-semibold">Dishes Category</p>
         <div className="flex gap-2">
           {categories.map((category) => (
             <span
               key={category._id}
-              className="border border-secondary rounded-xl"
+              className="border border-secondary rounded-full pl-5 pr-5 pt-2 pb-2 text-sm font-medium text-black cursor-pointer hover:bg-black hover:text-white transition"
             >
               {category.name}
             </span>
