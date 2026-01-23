@@ -67,6 +67,7 @@ export default function Home() {
           <img src="/Container (7).png" alt="Logo" />
         </Button>
       </div>
+
       <div className="w-full h-fit bg-white rounded-2xl p-5 mb-8 gap-4 flex flex-col">
         <p className="text-[20px] font-semibold">Dishes Category</p>
         <div className="flex gap-2">
@@ -82,7 +83,7 @@ export default function Home() {
       </div>
 
       <div className="border rounded-lg bg-white p-5">
-        <p className="text-lg font-semibold mb-5">Appetizers</p>
+        <p className="text-[20px] font-semibold mb-5">Appetizers</p>
 
         <div className="grid grid-cols-4 gap-5">
           <CreateFoodDialog />

@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/popover";
 import { email } from "zod/v4/mini";
 import { useState } from "react";
+import { useAuth } from "../context/AuthProvider";
 
 interface HeaderProps {
   totalItems: number;
@@ -30,6 +31,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ totalItems, onCartClick }: HeaderProps) => {
+  const { user } = useAuth();
   return (
     <div className="bg-black flex pr-44 pl-44 pt-3 pb-3 justify-between">
       <Link href="/">
@@ -93,25 +95,28 @@ export const Header = ({ totalItems, onCartClick }: HeaderProps) => {
             </span>
           )}
         </Button>
-
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="secondary"
-              className="rounded-full bg-[#EF4444] text-white"
-            >
-              <User />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-fit">
-            <div className="flex flex-col items-center gap-2 ">
-              <p>email</p>
-              <Button className="rounded-xl" variant={"secondary"}>
-                Sign out
+        {user ? (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="secondary"
+                className="rounded-full bg-[#EF4444] text-white"
+              >
+                <User />
               </Button>
-            </div>
-          </PopoverContent>
-        </Popover>
+            </PopoverTrigger>
+            <PopoverContent className="w-fit">
+              <div className="flex flex-col items-center gap-2 ">
+                <p>email</p>
+                <Button className="rounded-xl" variant={"secondary"}>
+                  Sign out
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        ) : (
+          <Button>Login</Button>
+        )}
       </div>
     </div>
   );
