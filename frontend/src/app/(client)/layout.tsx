@@ -1,5 +1,6 @@
 "use client";
 
+import { Toaster } from "sonner";
 import { Footer } from "./_components/Footer";
 import { Header } from "./_components/Header";
 import { CartProvider, useCart } from "./context/cart-context";
@@ -26,6 +27,7 @@ function LayoutInner({ children }: { children: React.ReactNode }) {
         onCartClick={() => setIsCartOpen(true)}
       />
       {children}
+      <Toaster />
       <Footer />
     </>
   );

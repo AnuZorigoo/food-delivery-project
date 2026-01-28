@@ -15,6 +15,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../(client)/context/AuthProvider";
 
 const emailSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -27,7 +28,7 @@ const passwordSchema = z
       .min(8, "Password must be at least 8 characters")
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-        "Must include uppercase, lowercase and a number"
+        "Must include uppercase, lowercase and a number",
       ),
     confirmPassword: z.string(),
   })
@@ -37,6 +38,7 @@ const passwordSchema = z
   });
 
 export default function SignupPage() {
+  const { register } = useAuth();
   const router = useRouter();
   const [step, setStep] = useState<"email" | "password">("email");
   const [email, setEmail] = useState("");

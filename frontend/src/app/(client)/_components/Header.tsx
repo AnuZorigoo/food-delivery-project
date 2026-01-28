@@ -24,6 +24,7 @@ import {
 import { email } from "zod/v4/mini";
 import { useState } from "react";
 import { useAuth } from "../context/AuthProvider";
+import { useRouter } from "next/navigation";
 
 interface HeaderProps {
   totalItems: number;
@@ -31,7 +32,8 @@ interface HeaderProps {
 }
 
 export const Header = ({ totalItems, onCartClick }: HeaderProps) => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const router = useRouter();
   return (
     <div className="bg-black flex pr-44 pl-44 pt-3 pb-3 justify-between">
       <Link href="/">
@@ -107,15 +109,19 @@ export const Header = ({ totalItems, onCartClick }: HeaderProps) => {
             </PopoverTrigger>
             <PopoverContent className="w-fit">
               <div className="flex flex-col items-center gap-2 ">
-                <p>email</p>
-                <Button className="rounded-xl" variant={"secondary"}>
+                <p>{user?.username}</p>
+                <Button
+                  className="rounded-xl"
+                  variant={"secondary"}
+                  onClick={() => logout()}
+                >
                   Sign out
                 </Button>
               </div>
             </PopoverContent>
           </Popover>
         ) : (
-          <Button>Login</Button>
+          <Button onClick={() => router.push("/login")}>Login</Button>
         )}
       </div>
     </div>

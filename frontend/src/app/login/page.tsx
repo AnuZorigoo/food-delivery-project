@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import z, { email } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../(client)/context/AuthProvider";
 
 const formSchema = z.object({
   username: z
@@ -28,11 +29,12 @@ const formSchema = z.object({
     .max(20)
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-      "Тусгай тэмдэгт болон том жижиг үсэг оруулна уу"
+      "Тусгай тэмдэгт болон том жижиг үсэг оруулна уу",
     ),
 });
 
 export default function LogInPage() {
+  const { login } = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,6 +42,11 @@ export default function LogInPage() {
       password: "",
     },
   });
+
+  const handleClick = () => {
+    const { username, password } = form.getValues();
+    login(username, password);
+  };
 
   const router = useRouter();
 
@@ -93,7 +100,7 @@ export default function LogInPage() {
             variant="secondary"
             className="w-full"
             type="button"
-            onClick={() => router.push("/")}
+            onClick={handleClick}
           >
             Let's go
           </Button>
