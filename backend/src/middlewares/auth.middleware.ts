@@ -11,10 +11,13 @@ export const authMiddleware: RequestHandler= (req, res, next) => {
     const token = authorization.split(' ')[1] as string;
 
     try{
-        const { user } = jwt.verify(token, "secretkey") as { user: Omit<typeof UserModel, 'password'> };
+        const { user } = jwt.verify(token, "secretkey") as { user: {_id: string} };
+        
+        req.userId = user._id;
+        
         next();
     }
-    catch{
+    catch(err){
         return res.status(401).json({ message: 'Invalid token' });
     }
     
