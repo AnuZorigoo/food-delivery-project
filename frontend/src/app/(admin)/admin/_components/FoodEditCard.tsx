@@ -18,6 +18,8 @@ import { useState } from "react";
 
 import { toast } from "sonner";
 import { CategoryCombobox } from "./CategoryCombobox";
+import { api } from "@/lib/axios";
+import { set } from "zod";
 
 export const FoodEditCard = ({
   food,
@@ -26,6 +28,7 @@ export const FoodEditCard = ({
   food: any;
   onAddToCart: (food: any) => void;
 }) => {
+  const [currentFood, setCurrentFood] = useState(food);
   const [checked, setChecked] = useState(false);
 
   const handleClick = () => {
@@ -43,6 +46,16 @@ export const FoodEditCard = ({
   };
   const decrement = () => {
     setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+
+  const handleDelete = async (_id: string) => {
+    await api.delete(`/foods/${_id}`);
+    toast.success("Food deleted successfully");
+  };
+
+  const handleEdit = async (_id: string) => {
+    await api.put(`/foods/${_id}`, currentFood);
+    toast.success("Food updated successfully");
   };
 
   return (
@@ -94,10 +107,10 @@ export const FoodEditCard = ({
               <div className="flex gap-2">
                 <p className="text-[12px] text-[#71717A] flex-1">Dish name</p>
                 <Input
-                  id="dish-name"
-                  name="dish-name"
-                  defaultValue={food.name}
-                  className="flex-3"
+                  value={currentFood.name}
+                  onChange={(e) =>
+                    setCurrentFood({ ...currentFood, name: e.target.value })
+                  }
                 />
               </div>
               <div className="flex gap-2">
@@ -111,19 +124,26 @@ export const FoodEditCard = ({
               <div className="flex gap-2">
                 <p className="text-[12px] text-[#71717A] flex-1">Ingredients</p>
                 <Input
-                  id="dish-name"
-                  name="dish-name"
-                  defaultValue={food.ingredients}
-                  className="flex-3"
+                  value={currentFood.ingredients}
+                  onChange={(e) =>
+                    setCurrentFood({
+                      ...currentFood,
+                      ingredients: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="flex gap-2">
                 <p className="text-[12px] text-[#71717A] flex-1">Price</p>
                 <Input
-                  id="dish-name"
-                  name="dish-name"
-                  defaultValue={food.price}
-                  className="flex-3"
+                  type="number"
+                  value={currentFood.price}
+                  onChange={(e) =>
+                    setCurrentFood({
+                      ...currentFood,
+                      price: Number(e.target.value),
+                    })
+                  }
                 />
               </div>
               <div className="flex gap-2">
@@ -139,10 +159,11 @@ export const FoodEditCard = ({
                 <Button
                   className="h-10 w-12 border border-red-400"
                   variant={"outline"}
+                  onClick={() => handleDelete(food._id)}
                 >
                   <Trash className="text-red-400" />
                 </Button>
-                <Button onClick={() => onAddToCart?.(food)}>
+                <Button onClick={() => handleEdit(food._id)}>
                   Save Changes
                 </Button>
               </div>

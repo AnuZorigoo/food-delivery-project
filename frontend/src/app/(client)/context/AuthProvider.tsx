@@ -48,7 +48,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
       setUser(user);
 
-      router.push("/");
+      if (user.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Login failed");
     }

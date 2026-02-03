@@ -1,9 +1,7 @@
 import express from 'express'
-import { connectToDatabase } from './database/index.js'
-import { FoodRouter } from './routes/food.router.js'
-import { CategoryRouter } from './routes/category.router.js'
 import cors from 'cors'
-import { AuthRouter, OrderRouter } from './routes/index.js'
+import { AuthRouter, FoodRouter, OrderRouter, CategoryRouter } from './routes/index.js'
+import { connectToDatabase } from './database/index.js'
 
 
 
