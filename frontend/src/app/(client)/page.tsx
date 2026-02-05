@@ -1,12 +1,12 @@
 "use client";
 import Image from "next/image";
 import { FoodCard, FoodItem } from "./_components/FoodCard";
-import { FoodSection } from "./_components/FoodSection";
 
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCart } from "./context/cart-context";
 import { Header } from "./_components/Header";
+import FoodSection from "./_components/FoodSection";
 
 export default function Home() {
   const { addToCart, setIsCartOpen, getTotalItems } = useCart();

@@ -11,6 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CartHeader } from "./CartHeader";
 import { CartContent } from "./CartContent";
 import { useCart } from "../context/cart-context";
+import { use, useEffect, useState } from "react";
+import { api } from "@/lib/axios";
+import { GetOrder } from "./GetOrder";
 
 export function CartDrawer() {
   const {
@@ -25,6 +28,27 @@ export function CartDrawer() {
   const subtotal = getTotalPrice();
   const shipping = 0.99;
   const total = subtotal + shipping;
+
+  const [foods, setfoods] = useState([]);
+
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const config = {
+          headers: { Authorization: `Bearer ${token}` },
+        };
+
+        const response = await api.get("/orders", config);
+        console.log(response.data, "agadg");
+        setfoods(response.data);
+      } catch (error) {
+        console.error("Error fetching foods:", error);
+      }
+    };
+
+    fetchOrder();
+  }, []);
 
   return (
     <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
@@ -60,14 +84,8 @@ export function CartDrawer() {
               onRemoveFromCart={removeFromCart}
             />
           </TabsContent>
-
-          <TabsContent
-            value="order"
-            className="flex-1 overflow-auto px-6 py-4 mt-0"
-          >
-            <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-              <p>No orders yet</p>
-            </div>
+          <TabsContent value="order" className="flex-1 flex flex-col mt-0">
+            <GetOrder />
           </TabsContent>
         </Tabs>
       </SheetContent>

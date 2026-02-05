@@ -4,22 +4,28 @@ import { createContext, useContext, useState, ReactNode } from "react";
 import { CartDrawer } from "../_components/CardDrawer";
 
 type Food = {
-  id: number;
+  _id: number;
   name: string;
   price: string;
-  description: string;
-  image: string;
+  ingredients: string;
+  imageUrl: string;
+};
+
+export type OrderItem = Food & {
+  status: string;
 };
 
 export type CartItem = Food & {
   quantity: number;
+  // status: string;
 };
 
 interface CartContextType {
   cartItems: CartItem[];
+  orders: OrderItem[];
   addToCart: (item: Food) => void;
-  removeFromCart: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  removeFromCart: (_id: number) => void;
+  updateQuantity: (_id: number, quantity: number) => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
   isCartOpen: boolean;
@@ -34,10 +40,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addToCart = (item: Food) => {
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find((i) => i.id === item.id);
+      const existingItem = prevItems.find((i) => i._id === item._id);
       if (existingItem) {
         return prevItems.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          i._id === item._id ? { ...i, quantity: i.quantity + 1 } : i,
         );
       }
       return [...prevItems, { ...item, quantity: 1 }];
@@ -45,7 +51,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const removeFromCart = (id: number) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    setCartItems((prevItems) => prevItems.filter((item) => item._id !== id));
   };
 
   const updateQuantity = (id: number, quantity: number) => {
@@ -54,7 +60,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return;
     }
     setCartItems((prevItems) =>
-      prevItems.map((item) => (item.id === id ? { ...item, quantity } : item))
+      prevItems.map((item) => (item._id === id ? { ...item, quantity } : item)),
     );
   };
 
@@ -64,7 +70,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const getTotalPrice = () => {
     return cartItems.reduce((total, item) => {
-      const price = parseFloat(item.price.replace("$", ""));
+      const price =
+        typeof item.price === "string"
+          ? parseFloat(item.price.replace("$", ""))
+          : item.price;
+
       return total + price * item.quantity;
     }, 0);
   };

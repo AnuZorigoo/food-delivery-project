@@ -4,13 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Minus, Plus, X } from "lucide-react";
 import type { CartItem as CartItemType } from "../context/cart-context";
 
-interface CartItemProps {
+interface OrderItemProps {
   item: CartItemType;
   onUpdateQuantity: (_id: number, quantity: number) => void;
   onRemove: (_id: number) => void;
 }
 
-export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
+export function OrderItem({
+  item,
+  onUpdateQuantity,
+  onRemove,
+}: OrderItemProps) {
   return (
     <div className="flex gap-3 bg-white rounded-lg p-3 relative border">
       <img

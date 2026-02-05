@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,81 +16,102 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { api } from "@/lib/axios";
 
-const orders = [
-  {
-    id: 1,
-    customer: "John Doe",
-    food: "Burger",
-    date: "2025-01-10",
-    total: "$12",
-    address: "Ulaanbaatar, Mongolia",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    customer: "Sarah Smith",
-    food: "Pizza",
-    date: "2025-01-09",
-    total: "$22",
-    address: "Bayanzurkh District",
-    status: "Delivered",
-  },
-];
+interface OrderItem {
+  _id: string;
+  quantity: number;
+  price: number;
+  foodId: {
+    _id: string;
+    name: string;
+    price: number;
+    imageUrl?: string;
+  };
+}
+
+interface Order {
+  _id: string;
+  totalPrice: number;
+  status: string;
+  orderItems: OrderItem[];
+}
 
 export default function Page() {
   const [checkAll, setCheckAll] = useState(false);
-  const [checkedOrders, setCheckedOrders] = useState<number[]>([]);
-  const [status, setStatus] = useState("");
-  const [orderList, setOrderList] = useState(orders);
+  const [checkedOrders, setCheckedOrders] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [orders, setOrders] = useState<Order[]>([]);
 
-  const handleSave = () => {
-    setOrderList((prev) =>
-      prev.map((order) =>
-        checkedOrders.includes(order.id)
-          ? { ...order, status: selectedStatus }
-          : order
-      )
-    );
-  };
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) return;
+
+        const response = await api.get("/orders", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setOrders(response.data.orders ?? []);
+        console.log(response.data.orders, "ordersdata");
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+
+    fetchOrder();
+  }, []);
 
   const toggleCheckAll = () => {
     if (checkAll) {
       setCheckedOrders([]);
     } else {
-      setCheckedOrders(orders.map((o) => o.id));
+      setCheckedOrders(orders.map((o) => o._id));
     }
     setCheckAll(!checkAll);
   };
 
-  const toggleCheck = (id: number) => {
-    if (checkedOrders.includes(id)) {
-      setCheckedOrders(checkedOrders.filter((i) => i !== id));
-    } else {
-      setCheckedOrders([...checkedOrders, id]);
-    }
+  const toggleCheck = (id: string) => {
+    setCheckedOrders((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
+
+  const handleSave = () => {
+    if (!selectedStatus) return;
+
+    setOrders((prev) =>
+      prev.map((o) =>
+        checkedOrders.includes(o._id) ? { ...o, status: selectedStatus } : o,
+      ),
+    );
+
+    setCheckedOrders([]);
+    setCheckAll(false);
+    setSelectedStatus("");
   };
 
   return (
-    <div className="min-h-screen h-full bg-secondary flex flex-col  p-8">
-      <div className="w-full  flex content-end justify-end ">
-        <Button variant={"ghost"} className="rounded-full flex-end">
-          <img src="/Container (7).png" alt="Logo" className=" mb-4" />
+    <div className="min-h-screen h-full bg-secondary flex flex-col p-8">
+      <div className="w-full flex justify-end">
+        <Button variant={"ghost"} className="rounded-full">
+          <img src="/Container (7).png" alt="Logo" className="mb-4" />
         </Button>
       </div>
+
       <div className="w-full border rounded-lg bg-white">
         <div className="flex justify-between items-center p-4 border-b">
           <div>
             <p className="text-[20px] font-bold">Orders</p>
             <p className="text-[12px] text-[#71717A]">Items</p>
           </div>
+
           <Dialog>
             <form
               onSubmit={(e) => {
@@ -174,26 +195,35 @@ export default function Page() {
           </TableHeader>
 
           <TableBody>
-            {orderList.map((order, index) => (
-              <TableRow key={order.id} className="hover:bg-gray-50">
-                <TableCell>
-                  <input
-                    type="checkbox"
-                    checked={checkedOrders.includes(order.id)}
-                    onChange={() => toggleCheck(order.id)}
-                  />
-                </TableCell>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell className="font-medium">{order.customer}</TableCell>
-                <TableCell>{order.food}</TableCell>
-                <TableCell>{order.date}</TableCell>
-                <TableCell className="font-semibold">{order.total}</TableCell>
-                <TableCell>{order.address}</TableCell>
-                <TableCell>
-                  <ComboboxDemo />
-                </TableCell>
-              </TableRow>
-            ))}
+            {orders.map((order, index) => {
+              const foodNames =
+                order.orderItems?.map((i) => i.foodId?.name).join(", ") || "-";
+
+              return (
+                <TableRow key={order._id} className="hover:bg-gray-50">
+                  <TableCell>
+                    <input
+                      type="checkbox"
+                      checked={checkedOrders.includes(order._id)}
+                      onChange={() => toggleCheck(order._id)}
+                    />
+                  </TableCell>
+
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell className="font-medium">-</TableCell>
+                  <TableCell>{foodNames}</TableCell>
+                  <TableCell>-</TableCell>
+                  <TableCell className="font-semibold">
+                    ${order.totalPrice}
+                  </TableCell>
+                  <TableCell>-</TableCell>
+
+                  <TableCell>
+                    <ComboboxDemo />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>

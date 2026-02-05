@@ -63,7 +63,6 @@ export default function Home() {
     console.log("Added to cart:", food);
   };
 
-  // Шүүлтүүрийн логик
   const filteredCategories = selectedCategory
     ? categories.filter((cat) => cat._id === selectedCategory)
     : categories;
@@ -76,7 +75,6 @@ export default function Home() {
         </Button>
       </div>
 
-      {/* Category Selection Tab */}
       <div className="w-full h-fit bg-white rounded-2xl p-5 mb-8 gap-4 flex flex-col">
         <p className="text-[20px] font-semibold">Dishes Category</p>
         <div className="flex gap-2 flex-wrap">
@@ -108,7 +106,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Food Display Sections */}
       <div className="flex flex-col gap-8">
         {filteredCategories.map((category) => {
           // Тухайн ангилалд хамаарах хоолнуудыг шүүнэ
@@ -121,7 +118,6 @@ export default function Home() {
               <p className="text-[20px] font-semibold mb-5">{category.name}</p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                {/* Ангилал бүрийн эхэнд Add New Dish товчийг байрлууллаа */}
                 <CreateFoodDialog />
 
                 {foodsInCategory.map((food) => (
