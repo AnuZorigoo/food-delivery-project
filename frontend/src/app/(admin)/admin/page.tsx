@@ -6,6 +6,13 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/lib/axios";
 import { CreateFoodDialog } from "./_components/CreateFood";
 import { CreateCategoryDialog } from "./_components/CreateCategoryDialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useAuth } from "@/app/(client)/context/AuthProvider";
+import { useRouter } from "next/navigation";
 
 type Food = {
   _id: string;
@@ -28,6 +35,8 @@ export default function Home() {
   const [categories, setCategories] = useState<Categories[]>([]);
   const [foods, setFoods] = useState<Food[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { user, logout, updateAddress } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,9 +79,26 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-secondary p-8">
       <div className="flex justify-end mb-4">
-        <Button variant="ghost" className="rounded-full">
-          <img src="/Container (7).png" alt="Logo" />
-        </Button>
+        {user ? (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" className="rounded-full">
+                <img src="/Container (7).png" alt="Logo" />
+              </Button>
+            </PopoverTrigger>
+
+            <PopoverContent className="w-fit">
+              <div className="flex flex-col items-center gap-2">
+                <p>{user.username}</p>
+                <Button variant="secondary" onClick={logout}>
+                  Sign out
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        ) : (
+          <Button onClick={() => router.push("/login")}>Login</Button>
+        )}
       </div>
 
       <div className="w-full h-fit bg-white rounded-2xl p-5 mb-8 gap-4 flex flex-col">
@@ -108,7 +134,6 @@ export default function Home() {
 
       <div className="flex flex-col gap-8">
         {filteredCategories.map((category) => {
-          // Тухайн ангилалд хамаарах хоолнуудыг шүүнэ
           const foodsInCategory = foods.filter((food) =>
             food.categoryId.some((cat) => cat._id === category._id),
           );

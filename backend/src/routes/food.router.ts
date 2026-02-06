@@ -5,9 +5,11 @@ import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { deleteFood } from "../controllers/food/delete.food.js";
 import { updateFood } from "../controllers/food/updatefood.js";
 
+const FoodRouter = Router();
 
-const FoodRouter=Router();
+FoodRouter.get("/", authMiddleware, getFoods)
+  .post("/create", authMiddleware, createFood)
+  .delete("/:id", authMiddleware, deleteFood)
+  .put("/:_id", authMiddleware, updateFood);
 
-FoodRouter.get("/", authMiddleware, getFoods).post("/create", createFood).delete("/:id", deleteFood).put("/:_id",  updateFood);
-
-export {FoodRouter}
+export { FoodRouter };

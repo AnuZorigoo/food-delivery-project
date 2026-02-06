@@ -13,15 +13,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Car, MapPin, ShoppingCart, User } from "lucide-react";
+import { MapPin, ShoppingCart, User } from "lucide-react";
 import Link from "next/link";
-
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { email } from "zod/v4/mini";
 import { useState } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { useRouter } from "next/navigation";
@@ -32,89 +30,110 @@ interface HeaderProps {
 }
 
 export const Header = ({ totalItems, onCartClick }: HeaderProps) => {
-  const { user, logout } = useAuth();
   const router = useRouter();
+
+  const [city, setCity] = useState("");
+  const [street, setStreet] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { user, logout, updateAddress } = useAuth();
+
+  const saveLocation = async () => {
+    if (!city.trim() || !street.trim()) return;
+
+    try {
+      setLoading(true);
+      const address = `${city.trim()}, ${street.trim()}`;
+      await updateAddress(address);
+      setCity("");
+      setStreet("");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-black flex pr-44 pl-44 pt-3 pb-3 justify-between">
       <Link href="/">
         <img src="/Logo Container.png" className="w-36.5 h-11" />
       </Link>
+
       <div className="flex gap-3 items-center">
         <Dialog>
-          <form>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="rounded-full text-[12px]">
-                <p className="flex gap-1 text-[#EF4444]">
-                  {" "}
-                  <MapPin /> Delivery Address:{" "}
-                </p>
-                Add Location
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-106.25">
-              <DialogHeader>
-                <DialogTitle>Add Your Location</DialogTitle>
-                <DialogDescription>
-                  Enter your location below. Click save when you&apos;re done.
-                </DialogDescription>
-              </DialogHeader>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="rounded-full text-[12px]">
+              <p className="flex gap-1 text-[#EF4444]">
+                <MapPin /> Delivery Address:
+              </p>
+              {user?.address || "Add Location"}
+            </Button>
+          </DialogTrigger>
 
-              <div className="grid gap-4">
-                <div className="grid gap-3">
-                  <Label htmlFor="city">City</Label>
-                  <Input id="city" name="city" placeholder="Enter your city" />
-                </div>
+          <DialogContent className="sm:max-w-106.25">
+            <DialogHeader>
+              <DialogTitle>Add Your Location</DialogTitle>
+              <DialogDescription>
+                Enter your location below. Click save when you&apos;re done.
+              </DialogDescription>
+            </DialogHeader>
 
-                <div className="grid gap-3">
-                  <Label htmlFor="street">Street / Address</Label>
-                  <Input
-                    id="street"
-                    name="street"
-                    placeholder="Enter your street"
-                  />
-                </div>
+            <div className="grid gap-4">
+              <div className="grid gap-3">
+                <Label>City</Label>
+                <Input
+                  placeholder="Enter your city"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                />
               </div>
 
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
-                </DialogClose>
-                <Button type="submit">Save Location</Button>
-              </DialogFooter>
-            </DialogContent>
-          </form>
+              <div className="grid gap-3">
+                <Label>Street / Address</Label>
+                <Input
+                  placeholder="Enter your street"
+                  value={street}
+                  onChange={(e) => setStreet(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DialogClose>
+
+              <Button onClick={saveLocation} disabled={loading}>
+                {loading ? "Saving..." : "Save Location"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
         </Dialog>
 
         <Button
           size="icon"
-          className="w-9 h-9 bg-red-500 rounded-full hover:bg-red-600 relative transition-all shadow-md"
+          className="w-9 h-9 bg-red-500 rounded-full hover:bg-red-600 relative"
           onClick={onCartClick}
         >
           <ShoppingCart className="h-4 w-4 text-white" />
           {totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 bg-white text-red-500 text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center shadow-sm">
+            <span className="absolute -top-1 -right-1 bg-white text-red-500 text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
               {totalItems}
             </span>
           )}
         </Button>
+
         {user ? (
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                variant="secondary"
-                className="rounded-full bg-[#EF4444] text-white"
-              >
+              <Button className="rounded-full bg-[#EF4444] text-white">
                 <User />
               </Button>
             </PopoverTrigger>
+
             <PopoverContent className="w-fit">
-              <div className="flex flex-col items-center gap-2 ">
-                <p>{user?.username}</p>
-                <Button
-                  className="rounded-xl"
-                  variant={"secondary"}
-                  onClick={() => logout()}
-                >
+              <div className="flex flex-col items-center gap-2">
+                <p>{user.username}</p>
+                <Button variant="secondary" onClick={logout}>
                   Sign out
                 </Button>
               </div>

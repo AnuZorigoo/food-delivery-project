@@ -15,6 +15,7 @@ interface OrderItem {
     price: number;
     imageUrl?: string;
   };
+  address: string;
 }
 
 interface Order {
@@ -22,6 +23,11 @@ interface Order {
   totalPrice: number;
   status: string;
   orderItems: OrderItem[];
+  userId?: {
+    _id: string;
+    address?: string;
+    name?: string;
+  };
 }
 
 export const GetOrder = () => {
@@ -71,8 +77,8 @@ export const GetOrder = () => {
                   <Timer />
                   {order.createdAt}
                 </p>
-                <p>
-                  <Map />
+                <p className="flex gap-2 items-center">
+                  <Map /> {order.userId?.address ?? "-"}
                 </p>
               </div>
             ))}

@@ -6,35 +6,66 @@ import {
   createContext,
   useState,
   PropsWithChildren,
-  use,
   useContext,
   useEffect,
 } from "react";
 import { toast } from "sonner";
-import { set } from "zod";
-
-type AuthContextType = {
-  user: User | null;
-  logout: () => void;
-  login: (username: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
-};
 
 type User = {
   _id: string;
   username: string;
   email: string;
   role: string;
+  address?: string;
 };
+
 type LoginResponse = {
   user: User;
   accessToken: string;
 };
+
+type AuthContextType = {
+  user: User | null;
+  login: (username: string, password: string) => Promise<void>;
+  register: (
+    username: string,
+    email: string,
+    password: string,
+  ) => Promise<void>;
+  logout: () => void;
+
+  refetchMe: () => Promise<void>;
+  updateAddress: (address: string) => Promise<void>;
+};
+
 export const AuthContext = createContext({} as AuthContextType);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    setUser(null);
+  };
+
+  const refetchMe = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) return;
+
+    try {
+      const { data } = await api.get<{ user: User }>("/auth/me", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      setUser(data.user);
+    } catch {
+      localStorage.removeItem("accessToken");
+      setUser(null);
+    }
+  };
 
   const login = async (username: string, password: string) => {
     try {
@@ -42,58 +73,83 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         username,
         password,
       });
+
       const { user, accessToken } = data;
 
       localStorage.setItem("accessToken", accessToken);
-
       setUser(user);
 
-      if (user.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/");
-      }
+      router.push(user.role === "admin" ? "/admin" : "/");
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Login failed");
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("accessToken");
-    setUser(null);
-  };
-  const register = async (name: string, email: string, password: string) => {
-    const { data } = await api.post("/auth/register", {
-      name,
-      email,
-      password,
-    });
+  const register = async (
+    username: string,
+    email: string,
+    password: string,
+  ) => {
+    try {
+      await api.post("/auth/register", {
+        username,
+        email,
+        password,
+      });
 
-    router.push("/login");
+      router.push("/login");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Register failed");
+    }
   };
 
-  useEffect(() => {
+  const updateAddress = async (address: string) => {
     const accessToken = localStorage.getItem("accessToken");
 
-    const fetchMe = async () => {
-      try {
-        const { data } = await api.get<{ user: User }>("/auth/me", {
+    if (!accessToken) {
+      toast.error("Please login first");
+      return;
+    }
+
+    const trimmed = address.trim();
+    if (!trimmed) {
+      toast.error("Address is empty");
+      return;
+    }
+
+    try {
+      const { data } = await api.patch<{ user: User }>(
+        "/auth/address",
+        { address: trimmed },
+        {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        });
+        },
+      );
 
-        setUser(data.user);
-      } catch {
-        localStorage.removeItem("accessToken");
-      }
-    };
+      setUser(data.user);
+      toast.success("Location saved");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to save location");
+    }
+  };
 
-    fetchMe();
+  useEffect(() => {
+    refetchMe();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        refetchMe,
+        updateAddress,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

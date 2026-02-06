@@ -44,7 +44,7 @@ const foodFormSchema = z.object({
     },
     {
       message: "Price must be a valid positive number.",
-    }
+    },
   ),
   imageUrl: z.string().min(1, {
     message: "Image is required.",
@@ -83,7 +83,7 @@ export const CreateFoodDialog = () => {
   });
 
   const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -96,7 +96,7 @@ export const CreateFoodDialog = () => {
         {
           method: "POST",
           body: file,
-        }
+        },
       );
 
       if (!response.ok) {
