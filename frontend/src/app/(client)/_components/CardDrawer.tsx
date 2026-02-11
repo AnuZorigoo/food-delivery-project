@@ -11,11 +11,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CartHeader } from "./CartHeader";
 import { CartContent } from "./CartContent";
 import { useCart } from "../context/cart-context";
-import { use, useEffect, useState } from "react";
-import { api } from "@/lib/axios";
+import { useEffect, useState } from "react";
 import { GetOrder } from "./GetOrder";
 
 export function CartDrawer() {
+  const [tab, setTab] = useState<"cart" | "order">("cart");
+
   const {
     cartItems,
     removeFromCart,
@@ -23,32 +24,22 @@ export function CartDrawer() {
     getTotalPrice,
     isCartOpen,
     setIsCartOpen,
+    clearCart, // ✅ make sure you added this in cart-context
   } = useCart();
 
   const subtotal = getTotalPrice();
   const shipping = 0.99;
   const total = subtotal + shipping;
 
-  const [foods, setfoods] = useState([]);
+  const handleCheckoutSuccess = () => {
+    clearCart(); // ✅ empty cart
+    setTab("order"); // ✅ go to order tab
+  };
 
+  // ✅ optional: when drawer opens, show cart tab
   useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        const token = localStorage.getItem("accessToken");
-        const config = {
-          headers: { Authorization: `Bearer ${token}` },
-        };
-
-        const response = await api.get("/orders", config);
-        console.log(response.data, "agadg");
-        setfoods(response.data);
-      } catch (error) {
-        console.error("Error fetching foods:", error);
-      }
-    };
-
-    fetchOrder();
-  }, []);
+    if (isCartOpen) setTab("cart");
+  }, [isCartOpen]);
 
   return (
     <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
@@ -58,7 +49,12 @@ export function CartDrawer() {
           <CartHeader onClose={() => setIsCartOpen(false)} />
         </SheetHeader>
 
-        <Tabs defaultValue="cart" className="flex-1 flex flex-col">
+        {/* ✅ controlled tabs */}
+        <Tabs
+          value={tab}
+          onValueChange={(v) => setTab(v as "cart" | "order")}
+          className="flex-1 flex flex-col"
+        >
           <TabsList className="w-full rounded-none border-b bg-transparent p-0">
             <TabsTrigger
               value="cart"
@@ -82,8 +78,10 @@ export function CartDrawer() {
               total={total}
               onUpdateQuantity={updateQuantity}
               onRemoveFromCart={removeFromCart}
+              onCheckoutSuccess={handleCheckoutSuccess} // ✅
             />
           </TabsContent>
+
           <TabsContent value="order" className="flex-1 flex flex-col mt-0">
             <GetOrder />
           </TabsContent>

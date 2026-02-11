@@ -16,16 +16,13 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export interface FoodItem {
-  id: number;
+export type FoodItem = {
+  _id: string;
   name: string;
-
-  price: string;
-
-  description: string;
-
-  image: string;
-}
+  price: number;
+  ingredients: string;
+  imageUrl: string;
+};
 
 interface FoodCardProps {
   item: FoodItem;

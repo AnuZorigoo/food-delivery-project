@@ -13,7 +13,7 @@ export default function Home() {
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
 
   const handleAddToCart = (food: FoodItem, quantity: number) => {
-    for (let i = 0; i < quantity; i++) addToCart(food);
+    for (let i = 0; i < quantity; i++) addToCart(food as any);
     setSelectedFood(null);
     toast.success("Food is being added to the cart!");
   };

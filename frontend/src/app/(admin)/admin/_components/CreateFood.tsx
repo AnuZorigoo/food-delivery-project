@@ -44,7 +44,7 @@ const foodFormSchema = z.object({
     },
     { message: "Price must be a valid positive number." },
   ),
-  image: z.string().min(1, { message: "Image is required." }),
+  imageUrl: z.string().min(1, { message: "Image is required." }),
   ingredients: z
     .string()
     .min(5, { message: "Ingredients must be at least 5 characters." }),
@@ -72,7 +72,7 @@ export const CreateFoodDialog = () => {
       name: "",
       price: "",
       ingredients: "",
-      image: "",
+      imageUrl: "",
       categoryId: "",
     },
     mode: "onSubmit",
@@ -131,7 +131,10 @@ export const CreateFoodDialog = () => {
       }
 
       setUploadedImageUrl(url);
-      form.setValue("image", url, { shouldValidate: true, shouldDirty: true });
+      form.setValue("imageUrl", url, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
     } catch (error) {
       console.error("Upload failed:", error);
       alert("Upload failed. Please try again.");
@@ -144,19 +147,29 @@ export const CreateFoodDialog = () => {
 
   const removeImage = () => {
     setUploadedImageUrl("");
-    form.setValue("image", "", { shouldValidate: true, shouldDirty: true });
+    form.setValue("imageUrl", "", { shouldValidate: true, shouldDirty: true });
     resetFileInput();
   };
 
   const onSubmit = async (values: FoodFormValues) => {
     try {
-      await api.post("/foods/create", {
-        name: values.name,
-        price: parseFloat(values.price),
-        ingredients: values.ingredients,
-        imageURL: values.image,
-        categoryIds: [values.categoryId],
-      });
+      const token = localStorage.getItem("accessToken");
+
+      await api.post(
+        "/foods/create",
+        {
+          name: values.name,
+          price: parseFloat(values.price),
+          ingredients: values.ingredients,
+          imageUrl: values.imageUrl,
+          categoryId: values.categoryId, // 👈 array биш
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
       form.reset();
       setUploadedImageUrl("");
@@ -301,7 +314,7 @@ export const CreateFoodDialog = () => {
 
             <FormField
               control={form.control}
-              name="image"
+              name="imageUrl"
               render={() => (
                 <FormItem>
                   <FormLabel>Food image</FormLabel>

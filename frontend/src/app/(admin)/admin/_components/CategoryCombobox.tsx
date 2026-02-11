@@ -27,9 +27,17 @@ const frameworks = [
   { value: "Fish & Sea foods", label: "Fish & Sea foods" },
 ];
 
-export function CategoryCombobox() {
+type CategoryComboboxProps = {
+  value: string;
+  onChange: (newCategoryId: string) => void;
+};
+
+export const CategoryCombobox = ({
+  value,
+  onChange,
+}: CategoryComboboxProps) => {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("Appetizers");
+  const [selectedValue, setSelectedValue] = React.useState(value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -40,7 +48,10 @@ export function CategoryCombobox() {
           aria-expanded={open}
           className={cn("w-50 justify-between border")}
         >
-          {frameworks.find((framework) => framework.value === value)?.label}
+          {
+            frameworks.find((framework) => framework.value === selectedValue)
+              ?.label
+          }
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -54,7 +65,7 @@ export function CategoryCombobox() {
                   key={framework.value}
                   value={framework.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue);
+                    setSelectedValue(currentValue);
                     setOpen(false);
                   }}
                 >
@@ -62,7 +73,9 @@ export function CategoryCombobox() {
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === framework.value ? "opacity-100" : "opacity-0"
+                      selectedValue === framework.value
+                        ? "opacity-100"
+                        : "opacity-0",
                     )}
                   />
                 </CommandItem>
@@ -73,4 +86,4 @@ export function CategoryCombobox() {
       </PopoverContent>
     </Popover>
   );
-}
+};

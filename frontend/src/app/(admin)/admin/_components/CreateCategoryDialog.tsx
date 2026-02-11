@@ -30,10 +30,17 @@ export const CreateCategoryDialog = () => {
   });
 
   const onSubmit = async (values: CategoryValues) => {
-    await api.post("/categories/create", {
-      ...values,
-      categoryName: values.name,
-    });
+    const token = localStorage.getItem("accessToken");
+    await api.post(
+      "/categories/create",
+      {
+        ...values,
+        categoryName: values.name,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
     console.log("amjilttai");
     form.reset();
   };

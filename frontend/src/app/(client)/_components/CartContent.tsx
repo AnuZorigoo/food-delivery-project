@@ -14,6 +14,9 @@ interface CartContentProps {
   total: number;
   onUpdateQuantity: (id: number, quantity: number) => void;
   onRemoveFromCart: (id: number) => void;
+
+  // ✅ add this
+  onCheckoutSuccess: () => void;
 }
 
 export function CartContent({
@@ -23,9 +26,12 @@ export function CartContent({
   total,
   onUpdateQuantity,
   onRemoveFromCart,
+  onCheckoutSuccess,
 }: CartContentProps) {
   const onSubmit = async () => {
     try {
+      const token = localStorage.getItem("accessToken");
+
       await api.post(
         "/orders/create",
         {
@@ -34,17 +40,19 @@ export function CartContent({
             quantity: item.quantity,
             price: item.price,
           })),
-          totalPrice: total,
           subtotal,
           shipping,
-          total,
+          totalPrice: total,
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
+
+      // ✅ clear cart + switch tab (done in parent)
+      onCheckoutSuccess();
 
       alert("Order created successfully 🎉");
     } catch (error) {

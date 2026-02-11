@@ -19,12 +19,6 @@ export function FoodDetailDialog({
 }: FoodDetailDialogProps) {
   const [quantity, setQuantity] = useState(1);
 
-  const getTotalPrice = () => {
-    if (!food) return "$0.00";
-    const price = parseFloat(food.price.replace("$", ""));
-    return `$${(price * quantity).toFixed(2)}`;
-  };
-
   const handleAddToCart = () => {
     if (food) {
       onAddToCart(food, quantity);
@@ -48,7 +42,7 @@ export function FoodDetailDialog({
           <div className="flex flex-col">
             <div className="relative h-56 w-full">
               <img
-                src={food.image}
+                src={food.imageUrl}
                 alt={food.name}
                 className="w-full h-full object-cover"
               />
@@ -59,13 +53,13 @@ export function FoodDetailDialog({
                 {food.name}
               </h2>
               <p className="text-gray-600 text-xs mb-5 leading-relaxed">
-                {food.description}
+                {food.ingredients}
               </p>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-700 font-medium text-sm">
-                    Total price
+                    Price
                   </span>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2 border rounded-full px-1.5 bg-gray-50">
@@ -89,7 +83,7 @@ export function FoodDetailDialog({
                         <Plus className="h-3 w-3" />
                       </Button>
                     </div>
-                    <span className="text-xl font-bold">{getTotalPrice()}</span>
+                    <span className="text-xl font-bold">{food.price}</span>
                   </div>
                 </div>
 

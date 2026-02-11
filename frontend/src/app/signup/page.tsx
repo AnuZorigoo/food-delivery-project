@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../(client)/context/AuthProvider";
 
 const emailSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters"),
   email: z.string().email("Please enter a valid email address"),
 });
 
@@ -40,34 +41,45 @@ const passwordSchema = z
 export default function SignupPage() {
   const { register } = useAuth();
   const router = useRouter();
+
   const [step, setStep] = useState<"email" | "password">("email");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState("");
 
   const emailForm = useForm<z.infer<typeof emailSchema>>({
     resolver: zodResolver(emailSchema),
-    defaultValues: { email: "" },
+    defaultValues: { username: "", email: "" },
   });
 
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
-    defaultValues: {
-      password: "",
-      confirmPassword: "",
-    },
+    defaultValues: { password: "", confirmPassword: "" },
   });
 
   const onEmailSubmit = (values: z.infer<typeof emailSchema>) => {
+    setServerError("");
+    setUsername(values.username);
     setEmail(values.email);
     setStep("password");
   };
 
-  const onPasswordSubmit = (values: z.infer<typeof passwordSchema>) => {
-    const payload = {
-      email,
-      password: values.password,
-    };
+  const onPasswordSubmit = async (values: z.infer<typeof passwordSchema>) => {
+    setServerError("");
+    setIsSubmitting(true);
 
-    console.log("SIGN UP DATA:", payload);
+    try {
+      await register(username, email, values.password); // ✅ username нэмэгдсэн
+      router.push("/login");
+    } catch (err: any) {
+      console.error("Register failed:", err);
+      setServerError(
+        err?.response?.data?.message || "Signup failed. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -85,6 +97,21 @@ export default function SignupPage() {
               </p>
             </div>
 
+            {/* ✅ Username field */}
+            <FormField
+              control={emailForm.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Choose a username" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Email field */}
             <FormField
               control={emailForm.control}
               name="email"
@@ -97,6 +124,10 @@ export default function SignupPage() {
                 </FormItem>
               )}
             />
+
+            {serverError && (
+              <p className="text-sm text-red-500">{serverError}</p>
+            )}
 
             <Button type="submit" className="w-full" variant="secondary">
               Continue
@@ -128,6 +159,7 @@ export default function SignupPage() {
               variant="outline"
               className="w-9"
               onClick={() => setStep("email")}
+              disabled={isSubmitting}
             >
               <ChevronLeft />
             </Button>
@@ -169,12 +201,12 @@ export default function SignupPage() {
               )}
             />
 
-            <Button
-              type="submit"
-              className="w-full"
-              onClick={() => router.push("/login")}
-            >
-              Create account
+            {serverError && (
+              <p className="text-sm text-red-500">{serverError}</p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Creating..." : "Create account"}
             </Button>
 
             <div className="flex gap-2 items-center">
