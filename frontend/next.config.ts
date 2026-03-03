@@ -5,9 +5,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         hostname: "*",
-      }
-    ]
-  }
+      },
+    ],
+  },
+  env: {
+    BACKEND_URL: process.env.BACKEND_URL,
+  },
 };
 
 export default nextConfig;
