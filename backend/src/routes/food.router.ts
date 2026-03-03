@@ -7,7 +7,7 @@ import { updateFood } from "../controllers/food/updatefood.js";
 
 const FoodRouter = Router();
 
-FoodRouter.get("/", authMiddleware, getFoods)
+FoodRouter.get("/", getFoods)
   .post("/create", authMiddleware, createFood)
   .delete("/:id", authMiddleware, deleteFood)
   .put("/:_id", authMiddleware, updateFood);
