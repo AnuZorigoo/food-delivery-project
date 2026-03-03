@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: process.env.BACKEND_URL,
+  baseURL: "https://food-delivery-project-bgit.vercel.app/",
   headers: { "Content-Type": "application/json" },
 });
 
